@@ -40,6 +40,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    // usedr here
+
     /**
      * The attributes that should be cast.
      *
