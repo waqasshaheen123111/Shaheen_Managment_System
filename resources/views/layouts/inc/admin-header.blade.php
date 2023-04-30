@@ -2,6 +2,7 @@
 <html lang="en">
   <!-- Mirrored from preschool.dreamguystech.com/template/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 21 Apr 2023 07:24:37 GMT -->
   <head>
+
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -20,7 +21,13 @@
     <link rel="stylesheet" href="{{asset('assets/plugins/datatables/datatables.min.css')}}">
 
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
+    
   </head>
+  <style>
+    .newone{
+      color:red;
+    }
+  </style>
   <body>
     <div class="main-wrapper">
       <div class="header">
