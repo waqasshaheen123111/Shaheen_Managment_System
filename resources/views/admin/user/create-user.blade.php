@@ -223,7 +223,7 @@
                                         </label>
                                         <input type="checkbox" name="parent" value="{{$parent->id}}">
                                       </h5>
-                                     
+                                     <h5></h5>
                                     </div>
                                   </div>
                                 </div>
