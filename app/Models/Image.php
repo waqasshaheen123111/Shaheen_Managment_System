@@ -12,7 +12,11 @@ class Image extends Model
     protected $fillable = [
         'user_id',
         'img',
+        'path',
         
+    ];
+    protected $attributes = [
+        'path' => '',
     ];
   
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Mail\MyMail;
 use App\Models\User;
 use App\Models\Grade;
 use App\Models\Image;
+use App\Models\Parents;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Support\Str;
@@ -15,8 +17,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\UserRequestForm;
-use App\Models\Parents;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -56,7 +58,7 @@ class UserController extends Controller
     {
     //    dd($request1);
     // dd($request->all());
-        
+        // dd($request->class);
         $data=$request->validated();
         // dd($data);
         // dd($data);
@@ -68,7 +70,8 @@ class UserController extends Controller
         $users->password=Hash::make($data['password']);
         $users->adress=$data['address'];
         $users->mobile=$data['mobile'];
-        $users->dob=$data['date'];
+        $date=Carbon::parse($data['date']);
+        $users->dob=$date;
 
 
         // dd($request->file('image'));
@@ -90,7 +93,7 @@ class UserController extends Controller
             $email_role='Parent';
         }
         // dd($data);
-        dd($data['role']);
+        // dd($data['role']);
         // dd($data['name']);
         $users->save();
         if ($users->role=='3') {
@@ -104,6 +107,8 @@ class UserController extends Controller
             $student->user_id=$users->id;
             $student->class_id=$request->class;
             $student->save();
+
+            
             // $user_parent=new User;
             // $user_parent->name=$request->parent_name;
             // $user_parent->email=$request->parent_email;
@@ -119,15 +124,19 @@ class UserController extends Controller
         
 
         
-            foreach ($request->dp as $key=>$value ) {
+            foreach ($request->dp as $image1 ) {
                 // dd('ok');
-                $images=new Image;
-                $filename=time().microtime().microtime().'.'. $value->getClientOriginalExtension();
-                $value->move('uploads/users/',$filename);
-                // dd($filename);
-                $images->user_id=$users->id;
-                $images->img=$filename;
-            $images->save();
+                // Storage::disk('public')->put('avatars/1', $image1);
+                $path = $image1->store('uploads/users','public');
+                
+                $users->images()->create([
+                    'img' => $image1->hashName(),
+                    'path' => $path
+                    
+                    
+                ]);
+                
+             
             }
                 
             $email=$data['email'];
@@ -164,10 +173,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $parents=Parents::all();
         $classes=Grade::all();
         $students=Student::all();
         $user=User::find($id);
-        return view('admin.user.edit',compact('user','classes','students'));
+        return view('admin.user.edit',compact('user','classes','students','parents'));
     }
 
     /**
@@ -179,36 +189,88 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {   
+        // dd($request->all());
         $user=User::find($id);
         if ($user) {
             $user->name=$request->name;
         
         $user->email=$request->email;
-        $user->password=Hash::make($request->password);
+       
+        $date=$request->date;
+        // dd($date);
+        $user->dob=$date;
+        $user->mobile=$request->mobile;
+        $user->adress=$request->address;
+
+
+       
+       
+
+
+
         // dd($request->file('image'));
        
         
                 if($request->hasfile('dp')){
-                    $destination='uploads/users/'.$user->images->first()->img;
-            if (File::exists($destination)) {
-                File::delete($destination);
+                 
 
+
+
+                     if($user->images->count() >0){
+                        // dd($user->images);
+            // print_r($user->images);
+            // dd('this has an images');
+            // dd('ok');
+
+            // $id=88;
+            // $images1=Image::find($id);
+            // dd($images1);
+            foreach ($user->images as $image) {
+
+
+                // dd($image->path);
+
+
+
+                $path = $image->path;
+
+                // check if file exists in the disk
+                if (Storage::disk('public')->exists($path)) {
+                   
+                    Storage::disk('public')->delete($path);
+                }
+
+
+               
+               $image->delete();
+               
+                // dd('ok');
+                
             }
+            // dd('ok');?
+        }
             
 
-                    $file=$request->file('dp');
-                    $filename=time().microtime().'.'. $file->getClientOriginalExtension();
-                    $file->move('uploads/users/',$filename);
-                    // dd($filename);
-                    $user->images->first()->img=$filename;
-                    // dd("ok");
-                    foreach ($user->images as $key => $value) {
-                        $value->update();
-                    }
+        foreach ($request->dp as $image1 ) {
+            // dd('ok');
+            // Storage::disk('public')->put('avatars/1', $image1);
+            $path = $image1->store('uploads/users','public');
+            
+            $user->images()->create([
+                'img' => $image1->hashName(),
+                'path' => $path
+                
+                
+            ]);
+            
+         
+        }
                     
                     
 
                 } 
+
+
                 $user->role=$request->role;
                 $user->update();
                 if ($user->role=='2') {
@@ -343,6 +405,22 @@ class UserController extends Controller
             'status'=>200,
         ],200);
         
+    }
+    
+
+
+    public function get_user($id){
+        // dd($id);
+
+        $user=User::find($id);
+        // dd($user);
+        return view('admin.user.view_user',compact('user'));
+
+
+
+
+
+
     }
   
         

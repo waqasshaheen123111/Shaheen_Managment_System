@@ -186,7 +186,18 @@
               </div>
               <a class="dropdown-item" href="profile.html">My Profile</a>
               <a class="dropdown-item" href="inbox.html">Inbox</a>
-              <a class="dropdown-item" href="login.html">Logout</a>
+
+
+              <a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault();
+              document.getElementById('logout-form').submit();"
+              >Logout</a>
+
+              <form action="{{route('logout')}}" id="logout-form" method="POST" class="d-none">
+                @csrf
+
+              </form>
+
+
             </div>
           </li>
         </ul>

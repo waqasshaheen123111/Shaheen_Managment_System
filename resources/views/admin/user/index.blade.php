@@ -100,9 +100,23 @@
                   </td>
                   <td>{{$user->id}}</td>
                   <td>
+                    {{-- @php
+                          $user_id1=7;
+                        $user_get=App\Models\User::find($user_id1);
+                        echo $user_get->images->first()->path;
+                       
+
+                        // dd( asset('storage/' . $user_get->images->first()->path));
+                        
+                    @endphp 
+                     <img src="{{ asset('storage/' . str_replace('public/', '', $user_get->images->first()->path)) }}" alt="{{ $user_get->images->first()->img }}">
+
+                     {{dd('image')}} --}}
                     <h2 class="table-avatar">
                       <a href="student-details.html" class="avatar avatar-sm me-2">
-                        <img class="avatar-img rounded-circle" src="{{asset('uploads/users/'.optional($user->images->first())->img)}}" alt="User Image">
+                        
+                       
+                        <img class="avatar-img rounded-circle" src="{{ asset('storage/' . str_replace('public/', '', optional($user->images->first())->path)) }}" alt="{{ optional($user->images->first())->img }}">
                       </a>
                       <a href="student-details.html">{{$user->name}}</a>
                     </h2>
@@ -126,7 +140,7 @@
                 
                   <td class="text-end">
                     <div class="actions ">
-                      <a href="javascript:;" class="btn btn-sm bg-success-light me-2 ">
+                      <a href="{{url('admin/user/'.$user->id.'/view')}}" class="btn btn-sm bg-success-light me-2 ">
                         <i class="feather-eye"></i>
                       </a>
                       <a href="{{url('admin/users/'.$user->id.'/edit')}}" class="btn btn-sm bg-danger-light">

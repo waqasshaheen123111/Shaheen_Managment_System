@@ -114,7 +114,7 @@
                         <div class="form-group local-forms">
                           <label> Class <span class="login-danger">*</span>
                           </label>
-                            <select id="select_role"  class="form-control select">
+                            <select id="select_role"  name="class" class="form-control select">
                                 <option>Select your Class</option>
                                 @foreach ($classes as $class)
                                 <option value="{{$class->id}}" >{{$class->name.' ('.$class->groups.' )'}}</option>
@@ -223,7 +223,7 @@
                                         </label>
                                         <input type="checkbox" name="parent" value="{{$parent->id}}">
                                       </h5>
-                                     <h5></h5>
+                                   
                                     </div>
                                   </div>
                                 </div>

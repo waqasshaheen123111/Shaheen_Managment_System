@@ -22,6 +22,6 @@ class Student extends Model
         return $this->belongsTo(Parent::class);
     }
     public function classes(){
-        return $this->belongsTo(Grade::class);
+        return $this->belongsTo(Grade::class, 'class_id', 'id');
     }
 }

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Mail\MyMail;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -56,6 +58,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'profile_image' => ['required'],
         ]);
     }
 
@@ -85,7 +88,7 @@ class RegisterController extends Controller
         // }
             // dd($filename);
             
-
+        
        $users=  User::create([
          
             'name' => $data['name'],
@@ -96,6 +99,23 @@ class RegisterController extends Controller
             
 
         ]);
+
+        $path=$data['profile_image']->store('uploads/users','public');
+        $users->images()->create([
+            'path'=>$path,
+            'img'=>$data['profile_image']->hashName()
+        ]);
+
+
+
+
+
+
+
+
+
+
+       
         $email=$data['email'];
         $details = [
             'title' => 'Registration',

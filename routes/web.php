@@ -48,6 +48,8 @@ Route::prefix('admin')->middleware(['isAdmin'])->group(function(){
     Route::get('/dashboard',[App\Http\Controllers\Admin\DashboardController::class,'index']);
     
     Route::post('/users/parents',[App\Http\Controllers\Admin\UserController::class,'get_parents']);
+
+    Route::get('/user/{id}/view',[App\Http\Controllers\Admin\UserController::class,'get_user']);
     
     Route::get('/create_parents',[App\Http\Controllers\Admin\UserController::class,'create_parents']);
     
@@ -58,6 +60,13 @@ Route::prefix('admin')->middleware(['isAdmin'])->group(function(){
     Route::get('/send-mail',[App\Http\Controllers\Admin\viewController::class,'send_mail']);
     Route::put('/classes/subjects/delete_this/{id}',[App\Http\Controllers\Admin\viewController::class,'delete_subjects']);
     
+
+
+
+
+
+
+
 
 
     // ---User---Route---
